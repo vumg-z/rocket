@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import CubeConnectorStructure from './CubeConnectorStructure';
+import CubeConnectorStructure from './cubes/cubeConnectorStructure.js';
 import CameraController from './camera.js';
 
 const scene = new THREE.Scene();

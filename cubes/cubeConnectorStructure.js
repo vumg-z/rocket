@@ -1,5 +1,5 @@
-import Cube from './cubes/cube';
-import Conector from './cubes/conector';
+import Cube from './cube.js';
+import Conector from './conector.js';
 
 class CubeConnectorStructure {
   constructor(cube1Props, cube2Props, connectorProps) {
