@@ -1,69 +1,56 @@
 import * as THREE from 'three';
-import Cube from './cubes/cube';
+import CubeConnectorStructure from './CubeConnectorStructure';
 import CameraController from './camera.js';
-import Conector from './cubes/conector';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor( 0x808080 ); // Set to gray
+renderer.setClearColor(0x808080); // Set to gray
 document.body.appendChild(renderer.domElement);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Create a new connector
+// Parámetros para los Cubos y el Conector
+const cubeSize = 1; // Cube size
 const connectorSize = .9; // Connector size
-const connectorColor = 0xffffff; // Connector color (in hexadecimal format)
-const connectorPosition = { x: 0, y: 0, z: 0 }; // Connector position
 
-const connector = new Conector(connectorSize, connectorColor, connectorPosition);
-connector.addToScene(scene);
-
-// Create the first cube
-const cube1Size = 1; // Cube size
 const cube1Color = 0xff0000; // Cube color (in hexadecimal format)
-const cube1Position = { x: 0, y: 0.6, z: 0 }; // Cube position
-
-const cube1 = new Cube(cube1Size, cube1Color, cube1Position);
-cube1.addToScene(scene);
-
-// Add the cube to the connector
-connector.insertCube(cube1);
-
-// Set the cube's connector property to the connector
-cube1.connector = connector;
-
-// Create the second cube
-const cube2Size = 1; // Cube size
 const cube2Color = 0x00ff00; // Cube color (in hexadecimal format)
-const cube2Position = { x: 0, y: -0.6, z: 0 }; // Cube position
+const connectorColor = 0xffffff; // Connector color (in hexadecimal format)
 
-const cube2 = new Cube(cube2Size, cube2Color, cube2Position);
-cube2.addToScene(scene);
-
-// Add the second cube to the connector
-connector.insertCube(cube2);
-
-// Set the second cube's connector property to the connector
-cube2.connector = connector;
+// Crear una matriz 2x2 de CubeConnectorStructure
+const structures = [];
+for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 2; j++) {
+    const connectorPosition = { x: i * 3, y: j * 3, z: 0 }; // Posición del Conector
+    const cube1Props = { size: cubeSize, color: cube1Color, position: { x: 0, y: 0.6, z: 0 } };
+    const cube2Props = { size: cubeSize, color: cube2Color, position: { x: 0, y: -0.6, z: 0 } };
+    const connectorProps = { size: connectorSize, color: connectorColor, position: connectorPosition };
+    const structure = new CubeConnectorStructure(cube1Props, cube2Props, connectorProps);
+    structure.addToScene(scene);
+    structures.push(structure);
+  }
+}
 
 camera.position.z = 5;
 
 let time = 0;
 
 function animate() {
-	time += 0.05; // adjust speed of oscillation
+  time += 0.05; // adjust speed of oscillation
 
-	// Move both cubes up and down between their respective limits
-	const deltaY = Math.sin(time) * 0.15;
-	cube1.move(0, deltaY, 0);
-	cube2.move(0, -deltaY, 0); // we move the second cube in the opposite direction
+  // Move both cubes up and down between their respective limits
+  const deltaY = Math.sin(time) * 0.15;
 
-	renderer.render(scene, camera);
-	requestAnimationFrame(animate);
+  for (let structure of structures) {
+    structure.moveCubes(deltaY);
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
 }
 
 animate();
@@ -73,9 +60,9 @@ const cameraController = new CameraController(camera, renderer.domElement);
 
 // Render the scene
 function render() {
-	cameraController.update(); // Update the camera movement
-	renderer.render(scene, camera);
-	requestAnimationFrame(render);
+  cameraController.update(); // Update the camera movement
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
 }
 
 render();
