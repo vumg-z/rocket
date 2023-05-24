@@ -7,9 +7,9 @@ class CubeConnectorStructure {
     this.connector = new Conector(connectorProps.size, connectorProps.color, connectorProps.position);
 
     // Crear los Cubos con la posición relativa al Conector
-    const connectorY = this.connector.mesh.position.y;
-    this.cube1 = new Cube(cube1Props.size, cube1Props.color, { x: 0, y: connectorY + 0.6, z: 0 });
-    this.cube2 = new Cube(cube2Props.size, cube2Props.color, { x: 0, y: connectorY - 0.6, z: 0 });
+    const connectorPosition = this.connector.mesh.position;
+    this.cube1 = new Cube(cube1Props.size, cube1Props.color, { x: connectorPosition.x, y: connectorPosition.y + 0.6, z: connectorPosition.z });
+    this.cube2 = new Cube(cube2Props.size, cube2Props.color, { x: connectorPosition.x, y: connectorPosition.y - 0.6, z: connectorPosition.z });
 
     // Conectar los Cubos con el Conector
     this.connector.insertCube(this.cube1);
@@ -17,6 +17,7 @@ class CubeConnectorStructure {
     this.cube1.connector = this.connector;
     this.cube2.connector = this.connector;
   }
+
 
   addToScene(scene) {
     // Añadir los Cubos y el Conector a la escena
