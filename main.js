@@ -26,14 +26,15 @@ const structures = [];
 for (let i = 0; i < 2; i++) {
   for (let j = 0; j < 2; j++) {
     const connectorPosition = { x: i * 3, y: j * 3, z: 0 }; // Posición del Conector
-    const cube1Props = { size: cubeSize, color: cube1Color, position: { x: 0, y: 0.6, z: 0 } };
-    const cube2Props = { size: cubeSize, color: cube2Color, position: { x: 0, y: -0.6, z: 0 } };
+    const cube1Props = { size: cubeSize, color: cube1Color, position: { x: connectorPosition.x, y: connectorPosition.y + 0.6, z: connectorPosition.z } };
+    const cube2Props = { size: cubeSize, color: cube2Color, position: { x: connectorPosition.x, y: connectorPosition.y - 0.6, z: connectorPosition.z } };
     const connectorProps = { size: connectorSize, color: connectorColor, position: connectorPosition };
     const structure = new CubeConnectorStructure(cube1Props, cube2Props, connectorProps);
     structure.addToScene(scene);
     structures.push(structure);
   }
 }
+
 
 camera.position.z = 5;
 
