@@ -22,6 +22,10 @@ class Cube {
 
         // Set the position of the mesh
         this.mesh.position.set(position.x, position.y, position.z);
+
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
+
     }
 
     // This method can be used to add the cube to a Three.js scene

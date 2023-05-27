@@ -11,28 +11,48 @@ renderer.setClearColor(0x808080); // Set to gray
 document.body.appendChild(renderer.domElement);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
 document.body.appendChild(renderer.domElement);
+
+const spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(0, 5, 10);
+spotLight.castShadow = true;
+scene.add(spotLight);
+
+spotLight.shadow.mapSize.width = 1024; // tamaño de la textura de la sombra
+spotLight.shadow.mapSize.height = 1024;
+spotLight.shadow.camera.near = 0.5; // cuán cerca comienza a proyectarse la sombra
+spotLight.shadow.camera.far = 500; // cuán lejos se proyecta la sombra
+
 
 // Parámetros para los Cubos y el Conector
 const cubeSize = 1; // Cube size
 const connectorSize = .9; // Connector size
 
-const cube1Color = 0xff0000; // Cube color (in hexadecimal format)
-const cube2Color = 0x00ff00; // Cube color (in hexadecimal format)
+const cube1Color = 0x000000; // Cube color (in hexadecimal format)
+const cube2Color = 0x000000; // Cube color (in hexadecimal format)
 const connectorColor = 0xffffff; // Connector color (in hexadecimal format)
 
 // Crear una matriz 2x2 de CubeConnectorStructure
 const structures = [];
-for (let i = 0; i < 2; i++) {
-  for (let j = 0; j < 2; j++) {
-    const connectorPosition = { x: i * 3, y: j * 3, z: 0 }; // Posición del Conector
+
+const positions = [
+    { x: 0, y: 1.999, z: 0.23931271456177017 },
+    { x: 1.0961179061289288, y: 2, z: -0.8602099121356961 },
+    { x: 1.0961179061289288, y: 2, z: 0.23931271456177017 },
+    { x: -0.0052521226297396195, y: 2, z: -0.8700423185801522 },
+];
+
+
+for (let i = 0; i < positions.length; i++) {
+    const connectorPosition = positions[i]; // Posición del Conector
     const cube1Props = { size: cubeSize, color: cube1Color, position: { x: connectorPosition.x, y: connectorPosition.y + 0.6, z: connectorPosition.z } };
     const cube2Props = { size: cubeSize, color: cube2Color, position: { x: connectorPosition.x, y: connectorPosition.y - 0.6, z: connectorPosition.z } };
     const connectorProps = { size: connectorSize, color: connectorColor, position: connectorPosition };
     const structure = new CubeConnectorStructure(cube1Props, cube2Props, connectorProps);
     structure.addToScene(scene);
     structures.push(structure);
-  }
 }
 
 
@@ -41,17 +61,17 @@ camera.position.z = 5;
 let time = 0;
 
 function animate() {
-  time += 0.05; // adjust speed of oscillation
+	time += 0.05; // adjust speed of oscillation
 
-  // Move both cubes up and down between their respective limits
-  const deltaY = Math.sin(time) * 0.15;
+	// Move both cubes up and down between their respective limits
+	const deltaY = Math.sin(time) * 0.15;
 
-  for (let structure of structures) {
-    structure.moveCubes(deltaY);
-  }
+	for (let structure of structures) {
+		structure.moveCubes(deltaY);
+	}
 
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
+	renderer.render(scene, camera);
+	requestAnimationFrame(animate);
 }
 
 animate();
@@ -61,9 +81,9 @@ const cameraController = new CameraController(camera, renderer.domElement);
 
 // Render the scene
 function render() {
-  cameraController.update(); // Update the camera movement
-  renderer.render(scene, camera);
-  requestAnimationFrame(render);
+	cameraController.update(); // Update the camera movement
+	renderer.render(scene, camera);
+	requestAnimationFrame(render);
 }
 
 render();
