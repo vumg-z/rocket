@@ -102,5 +102,4 @@ function animate() {
     // Renderizar la escena
     renderer.render(scene, camera);
 
-    console.log(camera.rotation)
 }
