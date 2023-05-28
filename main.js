@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from './OrbitControls.js';
 import PropulsionSimulator from './PropulsionSimulator.js';
 
-let camera, scene, renderer, controls, propulsionSimulator;
+let camera, scene, renderer, controls, propulsionZone, propulsionSimulator;
+let upKeyPressed = false;
 
 init();
 animate();
@@ -28,20 +29,44 @@ function init() {
     // Crear los controles de la cámara
     controls = new OrbitControls(camera, renderer.domElement);
 
+    // Crear la zona de propulsión
+    propulsionZone = new THREE.Mesh(
+        new THREE.BoxGeometry(2, 0.5, 2),
+        new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    );
+    propulsionZone.position.set(0, 0, 0);
+    scene.add(propulsionZone);
+
     // Iniciar el simulador de propulsión
-    propulsionSimulator = new PropulsionSimulator(scene);
+    propulsionSimulator = new PropulsionSimulator(scene, propulsionZone);
     propulsionSimulator.init();
+
+    // Agregar eventos de teclado para los controles de movimiento hacia arriba
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+}
+
+function handleKeyDown(event) {
+    if (event.code === 'ArrowUp') {
+        upKeyPressed = true;
+    }
+}
+
+function handleKeyUp(event) {
+    if (event.code === 'ArrowUp') {
+        upKeyPressed = false;
+    }
 }
 
 function animate() {
     requestAnimationFrame(animate);
 
-    // Actualizar los controles de la cámara
-    controls.update();
+    if (upKeyPressed) {
+        propulsionZone.position.y += 0.1;
+    }
 
-    // Avanzar la simulación del simulador de propulsión
     propulsionSimulator.animate(renderer, camera);
-
-    // Renderizar la escena
+    controls.update();
     renderer.render(scene, camera);
 }
+
